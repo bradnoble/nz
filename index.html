@@ -82,20 +82,25 @@
         <div>
           <ul class="collection">
             <li class="collection-item">
-              <input type="text" v-model="name" />
-              <button v-on:click="insert()">Store location</button>
-              <button v-on:click="bulkDelete()">Bulk delete</button>
+              <div class="row">
+                <div class="col s12 m11">
+                  <input type="text" v-model="name" class="col m8" />
+                  <button v-on:click="insert()">Store location</button>
+                </div>
+                <div class="col s12 m1">
+                  <button v-on:click="bulkDelete()">Bulk delete</button>
+                </div>
+              </div>
             </li>
             <li v-bind:id="item._id" v-for="item in items" class="collection-item" :class="{'inactive': item._deleted==true}">
               <div class="row">
-                <div class="col s4 m4">
-                  <h6>{{ item.location }}</h6>
+                <div class="col s3 m3">
+                  <h6>{{ item.properties.name }}</h6>
                 </div>
-                <div class="col s4 m4">
-                  Long: {{ item.geometry.coordinates[0] }}<br />
-                  Lat: {{ item.geometry.coordinates[1] }}
+                <div class="col s5 m8">
+                  {{ item.geometry.coordinates }}
                 </div>
-                <div class="col s4 m4">
+                <div class="col s1 m1">
                   <button v-on:click="markForDeletion(item)">Delete</button>
                 </div>
                 {{ item | json }}

@@ -120,7 +120,9 @@ var list = {
           }
         }, function(error){
           console.log(error);
-          _this.loading = "Last geo attempt: " + error.message;
+          var errorCode = error.code;
+          var errorString = (errorCode == 2) ? 'position unavailable' : error.message;
+          _this.loading = "Last geo attempt: " +  errorString;
         }, geo_options);
       } else {
         console.log('Geolocation is not enabled.')
