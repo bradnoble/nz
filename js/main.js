@@ -85,10 +85,14 @@ var list = {
       
       function success(pos) {
         _this.loading = 'watching...'
+        _this.insert('watch');
+/*
         var crd = pos.coords;
         var doc = getDocScaffold();
         doc.geometry.coordinates = [position.coords.longitude, position.coords.latitude];
+        doc.watch = true;
         _this.watchPoints.push(doc);        
+*/
         /*
         if (target.latitude === crd.latitude && target.longitude === crd.longitude) {
           console.log('Congratulations, you reached the target');
@@ -105,19 +109,23 @@ var list = {
       options = {
         enableHighAccuracy: true, 
         maximumAge        : 30000, 
-        timeout           : 27000
+        timeout           : 5000
       };
       
       id = navigator.geolocation.watchPosition(success, error, options);
 
     },
 
-    insert: function(location){
+    insert: function(arg){
       _this = this;
       _this.loading = "Loading...";
       var doc = getDocScaffold();
 
       doc.properties.name = (_this.name) ? _this.name.trim() + ', New Zealand' : '';
+
+      if(arg == 'watch'){
+        doc.watch = true;
+      }
 
       var putDoc = function(doc){
         db.put(doc
