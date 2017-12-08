@@ -84,6 +84,7 @@ var list = {
       var id, target, options;
       
       function success(pos) {
+        _this.loading = 'watching...'
         var crd = pos.coords;
         var doc = getDocScaffold();
         doc.geometry.coordinates = [position.coords.longitude, position.coords.latitude];
@@ -98,12 +99,13 @@ var list = {
       
       function error(err) {
         console.warn('ERROR(' + err.code + '): ' + err.message);
+        _this.loading = err.code;
       }
             
       options = {
-        enableHighAccuracy: false,
-        timeout: 5000,
-        maximumAge: 0
+        enableHighAccuracy: true, 
+        maximumAge        : 30000, 
+        timeout           : 27000
       };
       
       id = navigator.geolocation.watchPosition(success, error, options);
