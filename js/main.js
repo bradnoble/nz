@@ -20,6 +20,7 @@ var list = {
       name: '',
       items: [],
       searchStr: '',
+      watchPoints: [],
       loading: false
     }
   },
@@ -78,12 +79,43 @@ var list = {
       putDocs(array);
     },
 
+    geowatch: function(){
+      _this = this;
+      var id, target, options;
+      
+      function success(pos) {
+        var crd = pos.coords;
+        var doc = getDocScaffold();
+        doc.geometry.coordinates = [position.coords.longitude, position.coords.latitude];
+        _this.watchPoints.push(doc);        
+        /*
+        if (target.latitude === crd.latitude && target.longitude === crd.longitude) {
+          console.log('Congratulations, you reached the target');
+          navigator.geolocation.clearWatch(id);
+        }
+      */
+      }
+      
+      function error(err) {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+      }
+            
+      options = {
+        enableHighAccuracy: false,
+        timeout: 5000,
+        maximumAge: 0
+      };
+      
+      id = navigator.geolocation.watchPosition(success, error, options);
+
+    },
+
     insert: function(location){
       _this = this;
       _this.loading = "Loading...";
       var doc = getDocScaffold();
 
-      doc.properties.name = (_this.name) ? _this.name + ', New Zealand' : '';
+      doc.properties.name = (_this.name) ? _this.name.trim() + ', New Zealand' : '';
 
       var putDoc = function(doc){
         db.put(doc

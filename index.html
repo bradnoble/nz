@@ -9,30 +9,10 @@
     <script src="js/vue-resource.min.js"></script>
     <script src="js/vue-router.js"></script>
     <script>
-      /*
-      var docs = [
-              {"city":"Auckland","country":"New Zealand","long":174.7655514,"step":0,"location":"Auckland, New Zealand","lat":-36.8534665,"type":"Feature","geometry":{"type":"Point","coordinates":[174.7655514,-36.8534665]},"properties":{"name":"Auckland, New Zealand"}}
-            ];
-      var putDocs = function(docs){
-        db.bulkDocs(docs)
-          .then(function (result) {
-            console.log(result);
-          }).catch(function (err) {
-            console.log(err);
-          });
-      };
-      */
       var db = new PouchDB('locations');
       var url = "https://beficheoulectinclanytowl:fec3f0f9d69d55bb53c924d1ae21ff0b233034f0@8945d084-2dfe-461c-9949-0400c2f828a9-bluemix.cloudant.com"
       var remoteDB = 'locations';
       var remoteDBurl = url + '/' + remoteDB;
-
-      var showDocs = function() {
-        db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-          console.log(doc.rows);
-        });
-      };
-
 
       db.replicate.to(remoteDBurl, {
         live: true,
@@ -45,10 +25,9 @@
         console.log('error:', err)
       });
 
-
     </script>
     <!--Import Google Icon Font-->
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
     <style type="text/css">
@@ -72,6 +51,15 @@
     -->
     <script type="text/x-template" id="list">
       <div>
+        <button v-on:click="geowatch()">Watch</button>
+        <div v-if="watchPoints && watchPoints.length > 0">
+          <ul>
+            <li v-for="point in watchPoints">
+              {{ point }}
+            </li> 
+          </ul> 
+        </div>
+
         <div v-if="loading">
           {{ loading }}
         </div>
@@ -80,8 +68,8 @@
             <li class="collection-item">
               <div class="row">
                 <div class="col s12 m11">
-                  <input type="text" v-model="name" class="col m12" />
-                  <button v-on:click="insert()" class="btn btn-large col m12 s12 waves-effect waves-light">Store location</button>
+                  <input type="text" v-model="name" class="col m8" placeholder="e.g., Wellington" />
+                  <button v-on:click="insert()" class="btn col m4 s12 waves-effect waves-light">Store location</button>
                 </div>
                 <div class="col s12 m1">
                   <button v-on:click="bulkDelete()">Bulk delete</button>
@@ -91,7 +79,7 @@
             <li v-bind:id="item._id" v-for="item in items" class="collection-item" :class="{'inactive': item._deleted==true}">
               <div class="row">
                 <div class="col s12 m3">
-                  <h6>{{ item.properties.name }}</h6>
+                  <h6 v-if="item.properties.name">{{ item.properties.name }}</h6>
                   {{ item._id }}
                 </div>
                 <div class="col s12 m8">
