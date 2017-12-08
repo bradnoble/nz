@@ -107,8 +107,8 @@ var list = {
       }
             
       options = {
-        enableHighAccuracy: true, 
-        maximumAge        : 30000, 
+        enableHighAccuracy: false, 
+        maximumAge        : 7000, 
         timeout           : 5000
       };
       
