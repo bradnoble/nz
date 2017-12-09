@@ -20,7 +20,7 @@ var list = {
       name: '',
       items: [],
       searchStr: '',
-      watchPoints: [],
+      watching: 'off',
       loading: false
     }
   },
@@ -30,7 +30,6 @@ var list = {
     this.start();
   },
   methods: {
-
     start: function(){
       _this = this;
       db.allDocs({include_docs: true, descending: true}, function(err, docs) {
@@ -43,7 +42,6 @@ var list = {
         _this.loading = false;
       });
     },
-
     markForDeletion: function(doc){
       if(doc._deleted){
         Vue.set(doc, '_deleted', false);
@@ -52,7 +50,6 @@ var list = {
         Vue.set(doc, '_deleted', true);
       }
     },
-
     bulkDelete: function(){
       // grab all items that are marked deleted
       // var q = "SELECT * FROM locations WHERE '_deleted' = 'true'";
@@ -79,26 +76,22 @@ var list = {
       putDocs(array);
     },
 
-    geowatch: function(){
+    geowatch: function(arg){
       _this = this;
       var id, target, options;
       
+      _this.watching = arg;
+
+      db.all({limit:1,'sort':'desc'}).then();
+
       function success(pos) {
         _this.loading = 'watching...'
+        // is this update at least a minute old?
+        // var q = "SELECT name, cost FROM animals WHERE collection = 'cats' ORDER BY name DESC LIMIT 50";
+        // db.sql(q).then(console.log);
+        // var q = "SELECT * from locations ORDER BY _id DESC LIMIT 1"
+        // db.sql(q).then(console.log);
         _this.insert('watch');
-/*
-        var crd = pos.coords;
-        var doc = getDocScaffold();
-        doc.geometry.coordinates = [position.coords.longitude, position.coords.latitude];
-        doc.watch = true;
-        _this.watchPoints.push(doc);        
-*/
-        /*
-        if (target.latitude === crd.latitude && target.longitude === crd.longitude) {
-          console.log('Congratulations, you reached the target');
-          navigator.geolocation.clearWatch(id);
-        }
-      */
       }
       
       function error(err) {
@@ -112,7 +105,11 @@ var list = {
         timeout           : 5000
       };
       
-      id = navigator.geolocation.watchPosition(success, error, options);
+      if(_this.watching == 'off'){
+        navigator.geolocation.clearWatch(id);        
+      } else {
+        id = navigator.geolocation.watchPosition(success, error, options);        
+      }
 
     },
 

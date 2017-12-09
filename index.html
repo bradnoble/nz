@@ -51,15 +51,9 @@
     -->
     <script type="text/x-template" id="list">
       <div>
-        <button v-on:click="geowatch()">Watch</button>
-        <div v-if="watchPoints && watchPoints.length > 0">
-          <ul>
-            <li v-for="point in watchPoints">
-              {{ point }}
-            </li> 
-          </ul> 
-        </div>
-
+        <button v-on:click="geowatch('on')" v-if="watching == 'off'">Watch</button>
+        <button v-on:click="geowatch('off')" v-if="watching == 'on'">Stop Watching</button>
+        
         <div v-if="loading">
           {{ loading }}
         </div>
