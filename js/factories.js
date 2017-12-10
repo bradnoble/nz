@@ -11,7 +11,7 @@ var getDocScaffold = function(){
         name: ""
     }
   };
-  console.log(doc);
+  // console.log(doc);
   return doc;
 }
 

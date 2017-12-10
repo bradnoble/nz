@@ -82,16 +82,36 @@ var list = {
       
       _this.watching = arg;
 
-      db.all({limit:1,'sort':'desc'}).then();
-
       function success(pos) {
         _this.loading = 'watching...'
         // is this update at least a minute old?
-        // var q = "SELECT name, cost FROM animals WHERE collection = 'cats' ORDER BY name DESC LIMIT 50";
-        // db.sql(q).then(console.log);
-        // var q = "SELECT * from locations ORDER BY _id DESC LIMIT 1"
-        // db.sql(q).then(console.log);
-        _this.insert('watch');
+        db.allDocs({
+          limit:1,
+          descending:true
+        }).then(function(data){
+          var id,
+            datetime,
+            dateStr,
+            seconds,
+            minutes;
+          
+          id = Date.parse(data.rows[0].id);
+          dateStr = new Date().toISOString();
+          datetime = Date.parse(dateStr); 
+  
+          // console.log('last doc: ', id);
+          // console.log('new date: ', datetime);
+          // console.log(datetime - id);
+          seconds = parseInt((datetime - id)/1000);
+          minutes = seconds/60;
+          // console.log('minutes:', minutes);
+          if(minutes > 1){
+            _this.insert('watch');            
+          } else {
+            console.log('too new ', minutes);
+          }
+        });
+        
       }
       
       function error(err) {
