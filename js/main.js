@@ -83,7 +83,6 @@ var list = {
       _this.watching = arg;
 
       function success(pos) {
-        _this.loading = 'watching...'
         // is this update at least a minute old?
         db.allDocs({
           limit:1,
@@ -125,10 +124,17 @@ var list = {
         timeout           : 5000
       };
       
+
       if(_this.watching == 'off'){
-        navigator.geolocation.clearWatch(id);        
-      } else {
-        id = navigator.geolocation.watchPosition(success, error, options);        
+        this.loading = '';
+        this.watching = arg;
+        //console.log(this.watching)
+        navigator.geolocation.clearWatch(id);
+      } else if (_this.watching == 'on') {
+        this.loading = 'watching...'
+        this.watching = arg;
+        //console.log(this.watching)
+        id = navigator.geolocation.watchPosition(success, error, options); 
       }
 
     },
