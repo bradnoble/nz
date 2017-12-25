@@ -1,10 +1,5 @@
 /*
-store name of place
-auto add new zealand
-grab geolocation
-handle if no coords
-save doc into pouchdb
-make sure pouchdb works from local site even if offline
+
 sync pouchdb with cloudant if online
 update view after insert
 push repo up to my github
@@ -32,7 +27,7 @@ var list = {
   methods: {
     start: function(){
       _this = this;
-      db.allDocs({include_docs: true, descending: true}, function(err, docs) {
+      db.allDocs({include_docs: true, descending: true, limit: 5}, function(err, docs) {
         var mapped = function(data){
           return data.rows.map(function(row) {
             return row.doc; 
